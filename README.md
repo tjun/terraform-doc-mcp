@@ -31,7 +31,7 @@ To use this with Claude Desktop, add the following to your claude_desktop_config
         "run",
         "-i",
         "--rm",
-        "ghcr.io/tjun/terraform-doc-mcp:1.0.0"
+        "ghcr.io/tjun/terraform-doc-mcp:1.0"
       ],
       "env": {}
     }
