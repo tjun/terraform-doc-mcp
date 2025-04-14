@@ -4,7 +4,7 @@ go 1.24.2
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
-	github.com/mark3labs/mcp-go v0.19.0
+	github.com/mark3labs/mcp-go v0.20.1
 )
 
 require (
