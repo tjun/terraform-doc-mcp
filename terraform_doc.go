@@ -87,7 +87,11 @@ func FetchTerraformMarkdown(provider, resource, version string) (string, error) 
 	if err != nil {
 		return "", err
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil {
+			slog.Error("Failed to close response body", "error", closeErr)
+		}
+	}()
 
 	if res.StatusCode != 200 {
 		return "", fmt.Errorf("not found: %s", url)
@@ -109,7 +113,11 @@ func getLatestVersion(repo string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil {
+			slog.Error("Failed to close response body", "error", closeErr)
+		}
+	}()
 
 	if res.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("failed to fetch tags: %s", res.Status)
