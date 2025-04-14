@@ -7,7 +7,7 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -48,3 +48,39 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
+
+  release:
+    needs: docker
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Generate Docker Image URLs
+        id: docker-urls
+        run: |
+          echo "DOCKER_IMAGE=ghcr.io/${{ github.repository }}" >> "$GITHUB_OUTPUT"
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Release
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            ## Docker Images
+            
+            You can pull the image using:
+            ```
+            docker pull ${{ steps.docker-urls.outputs.DOCKER_IMAGE }}:${{ steps.docker-urls.outputs.VERSION }}
+            ```
+            
+            Available tags:
+            - `${{ steps.docker-urls.outputs.VERSION }}`
+            - Major.Minor version (e.g. `1.2`)
+            - Major version (e.g. `1`)
+          draft: false
+          prerelease: false
