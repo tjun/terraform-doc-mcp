@@ -1,0 +1,64 @@
+// renovate.json5
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  // Renovate 標準推奨設定
+  "extends": [
+    "config:best-practices",
+    ":groupAllNonMajor",          // メジャー以外は 1 PR にまとめる
+    ":prHourlyLimit2",            // 1 時間あたり最大 2 PR
+    ":prConcurrentLimit5"         // 同時オープン PR 最大 5
+  ],
+
+  // PR 作成のタイムテーブル（日本の勤務時間帯）
+  "timezone": "Asia/Tokyo",
+  "schedule": ["after 09:00 and before 18:00 on Monday to Friday"],
+
+  // ダッシュボード Issue を有効化
+  "dependencyDashboard": true,
+
+  // PR/Issue のデフォルト設定
+  "assignees": ["tjun"],
+  "reviewers": ["tjun"],
+  "labels": ["dependencies"],
+
+  // semantic‑release などを使う場合は semantic コミットをオン
+  "semanticCommits": "enabled",
+
+  // ---- ルール別詳細設定 ----
+  "packageRules": [
+    // マイナー・パッチ更新は自動マージ
+    {
+      "minimumReleaseAge": "7 days",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr"       // テストが通れば PR を自動マージ
+    },
+
+    {
+      "matchManagers": ["gomod"],
+      "extends": ["schedule:weekly"]
+    },
+
+    {
+      "matchManagers": ["dockerfile"],
+      "extends": ["schedule:weekly"]
+    },
+
+    {
+      "matchManagers": ["github-actions"],
+      "extends": ["schedule:weekly"]
+    },
+
+    // lock file maintenance（例: go.sum tidy）を深夜実行
+    {
+      "description": "Lock file maintenance",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "schedule": ["before 3am on Sunday"],
+      "commitMessageTopic": "go.mod tidy"
+    }
+  ],
+
+  // PR を手動で Close しても再作成してほしい場合は true
+  "recreateClosed": true
+}
