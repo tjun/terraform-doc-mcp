@@ -29,6 +29,7 @@
   "packageRules": [
     // マイナー・パッチ更新は自動マージ
     {
+      "minimumReleaseAge": "7 days",
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
       "automergeType": "pr"       // テストが通れば PR を自動マージ
