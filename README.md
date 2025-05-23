@@ -1,5 +1,8 @@
 # terraform-doc-mcp
 
+## NOTE
+**This project is no longer actively maintained.** HashiCorp has released an official MCP server for Terraform at https://github.com/hashicorp/terraform-mcp-server. We recommend using the official server instead of this repository for better support and ongoing updates.
+
 ## Overview
 
 terraform-doc-mcp is an MCP server for retrieving documentation for Terraform providers and resources. 
